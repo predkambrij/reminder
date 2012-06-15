@@ -1,0 +1,155 @@
+<html>
+
+<body>
+<div id="javascript_countdown_time">For start countdown press "start"</div>
+<br>
+
+<!-- controls="controls" preload="auto" 
+loop="loop"
+autoplay="autoplay"
+loop="loop"
+loop="loop"
+-->
+
+<form>
+Enter time to countdown in seconds: <input id="seconds" type="text" size="5px" value="300" /><br/>
+<input type="button" value="Start" onClick="start()" />
+<input type="button" value="Stop" onClick="stop()" />
+</form>
+
+
+<audio id="audio" loop="loop">
+  <source src="sound1.wav" type="audio/wav"  />
+  Your browser does not support the audio tag.
+</audio>
+
+</body>
+
+<script type="text/javascript">
+var javascript_countdown = function () {
+	var time_left = 10; //number of seconds for countdown
+	var output_element_id = 'javascript_countdown_time';
+	var keep_counting = 1;
+	var pause = 0;
+	var counting = 0;
+	var no_time_left_message = 'Check mails!!!!';
+ 
+	function countdown() {
+		if(time_left < 2) {
+			keep_counting = 0;
+			counting = 0;
+		}
+ 
+		time_left = time_left - 1;
+	}
+ 
+	function add_leading_zero(n) {
+		if(n.toString().length < 2) {
+			return '0' + n;
+		} else {
+			return n;
+		}
+	}
+	function format_output() {
+		var hours, minutes, seconds;
+		seconds = time_left % 60;
+		minutes = Math.floor(time_left / 60) % 60;
+		hours = Math.floor(time_left / 3600);
+ 
+		seconds = add_leading_zero( seconds );
+		minutes = add_leading_zero( minutes );
+		hours = add_leading_zero( hours );
+		return hours + ':' + minutes + ':' + seconds;
+	}
+ 
+	function show_time_left() {
+		document.getElementById(output_element_id).innerHTML = format_output();//time_left;
+	}
+ 
+	function no_time_left() {
+		document.getElementById(output_element_id).innerHTML = no_time_left_message;
+		var t=setTimeout("startplay()",0);
+	}
+ 
+	return {
+		count: function () {
+			countdown();
+			show_time_left();
+		},
+		timer: function () {
+ 			if (pause == 0) {
+				if(keep_counting) {
+					javascript_countdown.count();
+					setTimeout("javascript_countdown.timer();", 1000);
+				} else {
+					no_time_left();
+				}
+			}
+		},
+		//Kristian Messer requested recalculation of time that is left
+		setTimeLeft: function (t) {
+			time_left = t;
+			if(keep_counting == 0) {
+				javascript_countdown.timer();
+			}
+		},
+		pause: function () {
+			pause = 1;
+			counting = 0;
+		},
+		resume: function (t) {
+			pause = 0;
+			setTimeout("javascript_countdown.timer();", 1000);
+		},
+		getCounting: function() {
+			return counting;
+		},
+		setSeconds: function(seconds) {
+			time_left = seconds;
+		},
+		init: function (t, element_id) {
+			pause = 0;
+			keep_counting = 1;
+			counting = 1;
+			time_left = t;
+			output_element_id = element_id;
+			javascript_countdown.timer();
+		}
+	};
+}();
+ 
+
+function start() {
+var t=setTimeout("stopplay()",0);
+var seconds = document.getElementById('seconds').value;
+
+if (javascript_countdown.getCounting() == 1) {
+	javascript_countdown.setSeconds(seconds);
+} else {
+	javascript_countdown.init(seconds, 'javascript_countdown_time');
+}
+
+}
+
+function stop() {
+javascript_countdown.pause();
+var t=setTimeout("stopplay()",0);
+}
+
+function startplay() {
+document.getElementById('audio').load()
+document.getElementById('audio').play()
+document.getElementById('audio').addEventListener('ended', function(){
+    this.currentTime = 0;
+}, false);
+}
+
+function stopplay() {
+//document.getElementById('audio').pause()
+document.getElementById('audio').load()
+}
+</script>
+
+
+
+</html>
