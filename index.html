@@ -17,6 +17,22 @@ Enter time to countdown in seconds: <input id="seconds" type="text" size="5px" v
 <input type="button" value="Stop" onClick="stop()" />
 </form>
 
+<textarea rows="10" cols="50" style="font-size: 20pt;text-transform: uppercase;">
+</textarea>
+
+<script>
+window.onbeforeunload = function (e) {
+    e = e || window.event;
+
+    // For IE and Firefox prior to version 4
+    if (e) {
+        e.returnValue = 'Sure?';
+    }
+
+    // For Safari
+    return 'Sure?';
+};
+</script>
 
 <audio id="audio" loop="loop">
   <source src="sound1.wav" type="audio/wav"  />
